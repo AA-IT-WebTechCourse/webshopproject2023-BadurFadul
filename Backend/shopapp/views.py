@@ -1,8 +1,13 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Address, Category, Product, Order, OrderItem, Review
+from .models import Category, Product, Order, OrderItem
 
 from django.db import IntegrityError
+from django.contrib.auth.models import User as DjangoUser
+
+from faker import Faker
+import random
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,22 +16,16 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
 from .serializers import (
-    AddressSerializer, 
     CategorySerializer, 
     ProductSerializer, 
     OrderSerializer, 
     OrderItemSerializer, 
-    ReviewSerializer,
     LoginSerializer,
     RegisterSerializer
 
     )
 
 # Create your views here.
-class AddressViewSet(viewsets.ModelViewSet):
-    queryset = Address.objects.all()
-    serializer_class = AddressSerializer
-    
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -43,12 +42,6 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
 
-class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
-    
-
-    
 class LoginView(APIView):
     """
     Login a user
@@ -97,3 +90,60 @@ class AboutMeView(APIView):
 
 class SessionAboutMeView(AboutMeView):
     authentication_classes = [authentication.SessionAuthentication]
+
+def populate_database(request):
+    # Delete existing data
+    Product.objects.all().delete()
+    Category.objects.all().delete()
+
+    fake = Faker()
+
+    # Create default categories if none exist
+    categories = Category.objects.all()
+    if not categories:
+        default_categories = ['Electronics', 'Clothing', 'Books']
+        for category_name in default_categories:
+            Category.objects.create(name=category_name, description=fake.text())
+
+    # Create or get 6 users
+    users = []
+    for i in range(1, 7):
+        username = f"testuser{i}"
+        password = f"pass{i}"
+        email = f"testuser{i}@shop.aa"
+
+        # Create or get Django user
+        django_user, created = DjangoUser.objects.get_or_create(username=username, email=email)
+        if created:  # Ensure the user is created
+            django_user.set_password(password)
+            django_user.save()
+        users.append(django_user)
+
+    # Distribute 10 products among 3 of the 6 users
+    users_with_ten_items = random.sample(users, 3)
+    for user in users_with_ten_items:
+        for _ in range(10):
+            title = fake.word()  # Generate a random word as the title
+            description = fake.text()  # Generate a random text as the description
+            price = round(random.uniform(10, 1000), 2)  # Generate a random price between 10 and 1000
+            quantity_available = random.randint(1, 100)  # Generate a random quantity between 1 and 100
+
+            # Get a random category or default to the first category
+            category = random.choice(categories) if categories else Category.objects.first()
+
+            # Create product for the user
+            product = Product.objects.create(
+                title=title,
+                description=description,
+                price=price,
+                quantity_available=quantity_available,
+                category=category,
+                user=user  # Assign the user to the product
+            )
+
+    # Update landing page with a message
+    message = "Database populated successfully!"
+    return JsonResponse({"message": message})
+    
+    #return render(request, 'landing_page.html', {'message': message})
+

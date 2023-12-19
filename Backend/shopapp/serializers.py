@@ -1,13 +1,8 @@
 from rest_framework import serializers
-from .models import Address, Category, Product, Order, OrderItem, Review
+from .models import  Category, Product, Order, OrderItem
 from django.contrib.auth.models import User
 
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields ='__all__'
         
-
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -32,10 +27,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
-class ReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Review
-        fields = '__all__'
 
 class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(style={"input_type": "password"})

@@ -11,11 +11,10 @@ from rest_framework_simplejwt.views import (
 
 router = DefaultRouter()
 router.register(r"products", views.ProductViewSet, basename="products")
-router.register(r"address", views.AddressViewSet, basename="address")
 router.register(r"category", views.CategoryViewSet, basename="category")
 router.register(r"order", views.OrderViewSet, basename="order")
 router.register(r"orderitem", views.OrderItemViewSet, basename="orderitem")
-router.register(r"reviews", views.ReviewViewSet, basename="reviews")
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +25,6 @@ urlpatterns = [
     path("api/register/", views.RegisterView.as_view()),
     path("api/me/", views.AboutMeView.as_view()),
     path("api/me-session/", views.SessionAboutMeView.as_view()),
+     path('populate/', views.populate_database, name='populate_database'),
 ]
 
