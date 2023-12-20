@@ -7,6 +7,8 @@ import SingleProduct from './Pages/SingleProduct'
 import Default from './Pages/Default'
 import Hero from './Pages/Hero'
 import Cart from './Pages/Cart'
+import Login from './Pages/Login'
+import  Signup  from './Pages/Signup'
 
 const App = () => {
   const router = createBrowserRouter([
@@ -36,8 +38,12 @@ const App = () => {
       ]
     },
     {
-      path: 'cart',
-      //element: <Cart/>
+      path: 'login',
+      element: <Login/>
+    },
+    {
+      path: 'register',
+      element: <Signup/>
     },
 
   ])

@@ -16,7 +16,7 @@ const SingleProduct = () => {
   const { Id } = useParams();
   const dispatch = useAppDispatch();
   const products = useAppSelector(state => state.productReducer.products);
-  const product = products.find(product => product.id === Id);
+  const product = products.find(product => product.Id === Id);
 
   if (!product) return <div>Product not found</div>;
 

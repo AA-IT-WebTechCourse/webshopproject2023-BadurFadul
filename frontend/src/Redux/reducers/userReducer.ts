@@ -33,9 +33,9 @@ export const createUser = createAsyncThunk(
 
 export const UserLogin = createAsyncThunk(
     "users/UserLogin",  
-    async ({ email, password }: UserCredentials, { rejectWithValue }) => {
+    async ({ username, password }: UserCredentials, { rejectWithValue }) => {
         try {         
-            const result = await axios.post("http://127.0.0.1:8000/api/login/", {email, password})
+            const result = await axios.post("http://127.0.0.1:8000/api/login/", {username, password})
             const tokenId : string = result.data;
             localStorage.setItem("token", tokenId)
             //const decodedToken = jwt_decode<{[x: string]: any; sub: string }>(tokenId);

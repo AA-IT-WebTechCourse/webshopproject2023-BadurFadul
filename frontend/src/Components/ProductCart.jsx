@@ -30,7 +30,7 @@ const ProductCart = ({ products }) => {
       <Box flexGrow={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <Box>
           <Typography variant='h6' sx={{ mb: 1 }}>
-            {products.name}
+            {products.title}
           </Typography>
           <Typography variant='body2' color='textSecondary'>
             {products.description}
