@@ -5,14 +5,25 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import registrationSchema from '../Validations/registrationSchema';
 import { registrationFormData } from '../Validations/registrationSchema';
+import { createUser } from '../Redux/reducers/userReducer';
+
+import useAppDispatch from '../Hooks/useAppDispatch';
 
 const Signup = () => {
     const { handleSubmit, control, formState: { errors } } = useForm<registrationFormData>({
         resolver: yupResolver(registrationSchema)
     });
 
+    const dispatch = useAppDispatch();
+
     const onSubmit = async (data: registrationFormData) => {
-        console.log(data);
+        try {
+            console.log(data)
+            dispatch(createUser(data))
+        }catch (exception)
+        {
+            alert("cant create user")
+        }
     };
 
     return (

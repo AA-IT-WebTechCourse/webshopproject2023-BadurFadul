@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Landing Page</title>
+</head>
+<body>
+    <h1>Welcome to the Landing Page</h1>
+    <p>Click the button below to populate the database:</p>
+    <form action="{% url 'populate_database' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Populate Database">
+
+         <!-- Link to the frontend -->
+    <p>Visit the <a href="http://localhost:3000/">frontend</a>.</p>
+    </form>
+</body>
+</html>

@@ -3,6 +3,11 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Category, Product, Order, OrderItem
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
 from django.db import IntegrityError
 from django.contrib.auth.models import User as DjangoUser
 
@@ -24,6 +29,40 @@ from .serializers import (
     RegisterSerializer
 
     )
+
+
+# Landing page view
+def landing_page_view(request):
+    return render(request, 'landingpage.html')
+
+
+class SearchItemsView(APIView):
+    def get(self, request):
+        title = request.GET.get('title', '')
+        if title:
+            # Filter products based on the title
+            products = Product.objects.filter(title__icontains=title)
+            serializer = ProductSerializer(products, many=True)
+            print(serializer.data)
+            return Response(serializer.data)
+        
+        return Response([])
+    
+class ChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if not user.check_password(old_password):
+            return Response({'error': 'Incorrect old password'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
 
 # Create your views here.
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -143,7 +182,6 @@ def populate_database(request):
 
     # Update landing page with a message
     message = "Database populated successfully!"
-    return JsonResponse({"message": message})
-    
-    #return render(request, 'landing_page.html', {'message': message})
+    #return JsonResponse({"message": message})
+    return render(request, 'landingpage.html', {'message': message})
 

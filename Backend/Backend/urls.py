@@ -17,6 +17,7 @@ router.register(r"orderitem", views.OrderItemViewSet, basename="orderitem")
 
 
 urlpatterns = [
+    path('', views.landing_page_view, name = "landing_page"),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -26,5 +27,7 @@ urlpatterns = [
     path("api/me/", views.AboutMeView.as_view()),
     path("api/me-session/", views.SessionAboutMeView.as_view()),
      path('populate/', views.populate_database, name='populate_database'),
+     path("api/search/", views.SearchItemsView.as_view()),
+     path('/api/change-password/', views.ChangePasswordAPIView.as_view(), name='change-password'),
 ]
 
